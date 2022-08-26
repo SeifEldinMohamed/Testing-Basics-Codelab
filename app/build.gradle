@@ -13,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testOptions.unitTests.includeAndroidResources = true
     }
     buildTypes {
         release {
@@ -33,9 +34,14 @@ android {
         enabled = true
         enabledForTests = true
     }
+    testOptions.unitTests {
+        includeAndroidResources = true
+
+    }
 }
 
 dependencies {
+
 
     // App dependencies
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
@@ -48,7 +54,6 @@ dependencies {
 
     // Architecture Components
     implementation "androidx.room:room-runtime:$roomVersion"
-    testImplementation 'junit:junit:4.12'
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
@@ -61,23 +66,41 @@ dependencies {
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$junitVersion"
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion") {
+        // https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug#debug-agent-and-android
+        exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+    }
+
+    // Dependencies for Android instrumented unit tests
+    androidTestImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion") {
+        // https://github.com/Kotlin/kotlinx.coroutines/tree/master/kotlinx-coroutines-debug#debug-agent-and-android
+        exclude group: "org.jetbrains.kotlinx", module: "kotlinx-coroutines-debug"
+    }
+
+    // Testing code should not be included in the main code.
+    // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
+    debugImplementation "androidx.fragment:fragment-testing:$fragmentVersion"
+    implementation "androidx.test:core:$androidXTestCoreVersion"
+
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    testImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
 
     // AndroidX Test - Instrumented testing
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:$archTestingVersion"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+    implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
 
     testImplementation "com.google.truth:truth:1.1.3"
 
-    // AndroidX Test - JVM testing
-    testImplementation "androidx.test.ext:junit-ktx:1.1.3"
-
-    testImplementation "androidx.test:core-ktx:1.4.0"
-
-    testImplementation "org.robolectric:robolectric:4.3.1"
-
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
 }

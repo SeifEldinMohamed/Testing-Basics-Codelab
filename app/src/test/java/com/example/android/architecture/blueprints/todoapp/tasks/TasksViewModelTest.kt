@@ -5,21 +5,30 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.android.architecture.blueprints.todoapp.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 
+@Config(sdk = [30])
 @RunWith(AndroidJUnit4::class)
 class TasksViewModelTest {
 
+    // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    lateinit var tasksViewModel: TasksViewModel
+
+    @Before
+    fun setup(){
+        // Given a fresh ViewModel
+        tasksViewModel = TasksViewModel(ApplicationProvider.getApplicationContext())
+    }
+
     @Test
     fun addNewTask_setsNewTaskEvent() {
-        // Given a fresh TasksViewModel
-        val tasksViewModel = TasksViewModel(ApplicationProvider.getApplicationContext())
-
         // When adding a new task
         tasksViewModel.addNewTask()
         val value = tasksViewModel.newTaskEvent.getOrAwaitValue()
@@ -27,6 +36,15 @@ class TasksViewModelTest {
         // Then the new task event is triggered
         assertThat(value.getContentIfNotHandled()).isNotNull()
     }
+    @Test
+    fun setFilterAllTasks_tasksAddViewVisible() {
+        // When the filter type is ALL_TASKS
+        tasksViewModel.setFiltering(TasksFilterType.ALL_TASKS)
+        val value = tasksViewModel.tasksAddViewVisible.getOrAwaitValue()
+        // Then the "Add task" action is visible
+        assertThat(value).isTrue()
+    }
+
 }
 
 /**
