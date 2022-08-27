@@ -184,3 +184,11 @@ class DefaultTasksRepository private constructor(application: Application) {
         return tasksLocalDataSource.getTask(id)
     }
 }
+
+// Here are some more specific reasons why testing the repository is hard:
+//
+//You need to deal with thinking about creating and managing a database to do even the simplest tests for this repository. This brings up questions like "should this be a local or instrumented test?" and if you should be using AndroidX Test to get a simulated Android environment.
+//Some parts of the code, such as networking code, can take a long time to run, or occasionally even fail, creating long running, flaky tests.
+//Flaky tests are tests that when run repeatedly on the same code, sometimes pass and sometimes fail. Avoid them when possible.
+//
+//Your tests could lose their ability to diagnose which code is at fault for a test failure. Your tests could start testing non-repository code, so, for example, your supposed "repository" unit tests could fail because of an issue in some of the dependant code, such as the database code.
