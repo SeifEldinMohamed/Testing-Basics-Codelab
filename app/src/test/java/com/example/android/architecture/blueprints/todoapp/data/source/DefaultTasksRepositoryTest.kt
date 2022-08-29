@@ -43,10 +43,12 @@ class DefaultTasksRepositoryTest {
         val tasks = tasksRepository.getTasks(true) as Result.Success
 
         // Then tasks are loaded from the remote data source
-        assertThat(tasks.data).isEqualTo(localTasks)
+        assertThat(tasks.data).isEqualTo(remoteTasks)
     }
 }
 // To run your tests, use the function runBlockingTest. This is a function provided by the coroutines test library.
 // It takes in a block of code and then runs this block of code in a special coroutine context
 // which runs synchronously and immediately, meaning actions will occur in a deterministic order.
 // This essentially makes your coroutines run like non-coroutines, so it is meant for testing code.
+
+// runBlockingTest is pretty much the same as runBlocking, with the exception that runBlockingTest will skip delays.
